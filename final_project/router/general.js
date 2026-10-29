@@ -2,6 +2,7 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+const axios = require('axios');
 const public_users = express.Router();
 
 
@@ -78,3 +79,61 @@ public_users.get('/review/:isbn', (req, res) => {
   }
 });
 module.exports.general = public_users;
+
+const API_BASE_URL = "http://localhost:5001";
+
+// Get all books using Axios and async/await
+async function getAllBooks() {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error retrieving all books:", error.message);
+    throw error;
+  }
+}
+
+// Get a book by ISBN
+async function getBooksByISBN(isbn) {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/isbn/${encodeURIComponent(isbn)}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error retrieving book by ISBN:", error.message);
+    throw error;
+  }
+}
+
+// Get books by author
+async function getBooksByAuthor(author) {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/author/${encodeURIComponent(author)}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error retrieving books by author:", error.message);
+    throw error;
+  }
+}
+
+// Get books by title
+async function getBooksByTitle(title) {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/title/${encodeURIComponent(title)}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error retrieving books by title:", error.message);
+    throw error;
+  }
+}
+
+// Export the Axios functions
+module.exports.getAllBooks = getAllBooks;
+module.exports.getBooksByISBN = getBooksByISBN;
+module.exports.getBooksByAuthor = getBooksByAuthor;
+module.exports.getBooksByTitle = getBooksByTitle;
